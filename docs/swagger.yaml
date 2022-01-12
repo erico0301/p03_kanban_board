@@ -1,0 +1,284 @@
+basePath: /
+definitions:
+  helper.BaseResponse:
+    properties:
+      data: {}
+      errors: {}
+      status:
+        type: integer
+    type: object
+  helper.ExampleErrorResponse:
+    properties:
+      email:
+        example: cannot be blank
+        type: string
+      message:
+        example: user bad request
+        type: string
+      password:
+        example: cannot be blank
+        type: string
+    type: object
+  modeluser.ExampleRequestUpdate:
+    properties:
+      email:
+        example: test@example.com
+        type: string
+      full_name:
+        example: jhondoe
+        type: string
+    type: object
+  modeluser.ExampleResponseDelete:
+    properties:
+      message:
+        example: your account has been successfully deleted
+        type: string
+    type: object
+  modeluser.Request:
+    properties:
+      email:
+        example: test@example.com
+        type: string
+      full_name:
+        example: jhondoe
+        type: string
+      password:
+        example: password
+        type: string
+    type: object
+  modeluser.RequestLogin:
+    properties:
+      email:
+        example: test@example.com
+        type: string
+      password:
+        example: password
+        type: string
+    type: object
+  modeluser.Response:
+    properties:
+      created_at:
+        example: "2021-11-03T01:52:41.035Z"
+        type: string
+      email:
+        example: test@example.com
+        type: string
+      full_name:
+        example: jhondoe
+        type: string
+      id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2021-11-03T01:52:41.035Z"
+        type: string
+    type: object
+  modeluser.ResponseLogin:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxd2Vxd2...
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is API for completing final project 3 hacktiv8
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Hacktiv8 KanbanBoard API
+  version: "1.0"
+paths:
+  /users/delete-account:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: Bearer + user token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/modeluser.ExampleResponseDelete'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+        "401":
+          description: Unauthorization
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+      summary: Delete user
+      tags:
+      - users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/modeluser.RequestLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/modeluser.ResponseLogin'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+        "404":
+          description: Record not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+      summary: Login user
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Create new user
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/modeluser.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: CREATED
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/modeluser.Response'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+        "409":
+          description: data conflict, like email already exist
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+      summary: Create new user
+      tags:
+      - users
+  /users/update-account:
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: Bearer + user token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/modeluser.ExampleRequestUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/modeluser.Response'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+        "401":
+          description: Unauthorization
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.BaseResponse'
+            - properties:
+                errors:
+                  $ref: '#/definitions/helper.ExampleErrorResponse'
+              type: object
+      summary: Update user
+      tags:
+      - users
+swagger: "2.0"
